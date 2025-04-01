@@ -26,7 +26,7 @@ def call(dockerRepoName, imageName, portNum) {
             stage('Security Scan') {
                 steps {
                     sh './venv/bin/pip install safety'
-                    sh './venv/bin/safety scan --full-report --output text'
+                    sh './venv/bin/safety scan --full-report --output screen'
                 }
                 post {
                     failure {
