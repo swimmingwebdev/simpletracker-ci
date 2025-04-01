@@ -11,22 +11,21 @@ def call(dockerRepoName, imageName, portNum) {
             stage('Setup Python Env') {
                 steps {
                     sh 'python3 -m venv venv'
-                    sh 'source venv/bin/activate && pip install --upgrade pip'
-                    sh 'source venv/bin/activate && pip install -r requirements.txt'
+                    sh './venv/bin/pip install --upgrade pip'
+                    sh './venv/bin/pip install -r requirements.txt'
                 }
             }
 
             stage('Python Lint') {
                 steps {
-                    sh 'source venv/bin/activate && pylint --fail-under=5 analyzer/app.py'
+                    sh './venv/bin/pylint --fail-under=5 analyzer/app.py'
                 }
             }
 
             stage('Security Scan') {
                 steps {
-                    sh 'source venv/bin/activate'
-                    sh 'pip install safety'
-                    sh 'safety check --full-report --output text --exit-code 1'
+                    sh './venv/bin/pip install safety'
+                    sh './venv/bin/safety check --full-report --output text --exit-code 1'
                 }
                 post {
                     failure {
