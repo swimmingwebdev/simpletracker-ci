@@ -38,6 +38,7 @@ def call(dockerRepoName, imageName, portNum) {
                             error("Security scan failed — CRITICAL or HIGH vulnerabilities found.")
                         }
                     }
+                }
                 post {
                     failure {
                         echo "Security scan failed — fix critical issues!"
