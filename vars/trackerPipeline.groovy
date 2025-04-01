@@ -57,7 +57,6 @@ def call(dockerRepoName, imageName, portNum) {
                     withCredentials([string(credentialsId: 'DockerHub', variable: 'TOKEN')]) {
                         sh "echo $TOKEN | docker login -u swimminwebdev --password-stdin"
                         sh "docker build -f ${imageName}/Dockerfile -t swimminwebdev/${dockerRepoName}:latest -t swimminwebdev/${dockerRepoName}:${imageName} ${imageName}/"
-                        sh "docker push swimminwebdev/${dockerRepoName}:latest"
                         sh "docker push swimminwebdev/${dockerRepoName}:${imageName}"
                     }
                 }
@@ -68,15 +67,14 @@ def call(dockerRepoName, imageName, portNum) {
                     expression { params.DEPLOY }
                 }
                 steps {
-                    withCredentials([sshUserPrivateKey(credentialsId: 'ec2-ssh-key', keyFileVariable: 'KEY')]) {
-                        sh '''
-                            ssh -i $KEY -o StrictHostKeyChecking=no ubuntu@ec2-34-234-232-11.compute-1.amazonaws.com << 'EOSSH'
-                            cd /home/ubuntu/simpletracker
-                            docker-compose pull
-                            docker-compose up -d
-                            EOSSH
-                        '''
-                    }
+                withCredentials([sshUserPrivateKey(credentialsId: 'ec2-ssh-key', keyFileVariable: 'KEY')]) {
+                    sh '''
+                        ssh -i "$KEY" -o StrictHostKeyChecking=no ubuntu@ec2-34-234-232-11.compute-1.amazonaws.com << 'EOSSH'
+                        cd /home/ubuntu/simpletracker
+                        docker-compose pull
+                        docker-compose up -d
+                        EOSSH
+                    '''
                 }
             }
         }
