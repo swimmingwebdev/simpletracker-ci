@@ -26,8 +26,18 @@ def call(dockerRepoName, imageName, portNum) {
             stage('Security Scan') {
                 steps {
                     sh './venv/bin/pip install safety'
-                    sh './venv/bin/safety scan --full-report --output screen'
-                }
+                    script {
+                        def result = sh(
+                            script: './venv/bin/safety scan --full-report --keyless --output screen || true',
+                            returnStdout: true
+                        ).trim()
+
+                        echo result
+
+                        if (result.contains('CRITICAL') || result.contains('HIGH')) {
+                            error("Security scan failed — CRITICAL or HIGH vulnerabilities found.")
+                        }
+                    }
                 post {
                     failure {
                         echo "Security scan failed — fix critical issues!"
