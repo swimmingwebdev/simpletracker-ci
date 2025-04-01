@@ -12,14 +12,14 @@ def call(dockerRepoName, imageName, portNum) {
                 steps {
                     sh 'python3 -m venv venv'
                     sh './venv/bin/pip install --upgrade pip'
-                    sh './venv/bin/pip install -r analyzer/requirements.txt'
+                    sh "./venv/bin/pip install -r ${dockerRepoName}/requirements.txt"
                 }
             }
 
             stage('Python Lint') {
                 steps {
                     sh './venv/bin/pip install pylint'
-                    sh './venv/bin/pylint --fail-under=5 analyzer/app.py'
+                    sh "./venv/bin/pylint --fail-under=5 ${dockerRepoName}/app.py"
                 }
             }
 
