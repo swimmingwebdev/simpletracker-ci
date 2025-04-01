@@ -9,6 +9,7 @@ def call(Map config) {
         stages {
             stage('Lint') {
                 steps {
+                    sh 'pip install pylint'
                     sh 'pylint app.py --fail-under=5 || true'
                 }
             }
