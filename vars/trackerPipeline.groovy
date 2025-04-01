@@ -9,8 +9,7 @@ def call(dockerRepoName, imageName, portNum) {
         stages {
             stage('Python Lint') {
                 steps {
-                    // Lint and fail if score is below 5
-                    sh 'pylint --fail-under=5 *.py'
+                    sh 'pylint --fail-under=5 analyzer/app.py'
                 }
             }
 
@@ -18,8 +17,8 @@ def call(dockerRepoName, imageName, portNum) {
                 steps {
                     // Install and run `safety`
                     sh '''
-                        venv/bin/pip install safety
-                        venv/bin/safety check --full-report --output text --exit-code 1
+                        pip install safety
+                        safety check --full-report --output text --exit-code 1
                     '''
                 }
                 post {
