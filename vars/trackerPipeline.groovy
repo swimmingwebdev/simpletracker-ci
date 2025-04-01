@@ -67,8 +67,9 @@ def call(dockerRepoName, imageName, portNum) {
                     expression { params.DEPLOY }
                 }
                 steps {
-                    sh "docker stop ${dockerRepoName} || true && docker rm ${dockerRepoName} || true"
-                    sh "docker run -d -p ${portNum}:${portNum} --name ${dockerRepoName} ${dockerRepoName}:latest"
+                    sh "cd /home/azureuser/simpletracker"
+                    sh "docker-compose pull"
+                    sh "docker-compose up -d"
                 }
             }
         }
