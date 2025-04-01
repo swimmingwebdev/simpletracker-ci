@@ -1,41 +1,60 @@
-def call(Map config) {
+def call(dockerRepoName, imageName, portNum) {
     pipeline {
-        agent any
+        agent { label 'python_agent2' }
 
-        environment {
-            DOCKERHUB_REPO = "${config.dockerhubRepo}"
+        parameters {
+            booleanParam(defaultValue: false, description: 'Deploy the App', name: 'DEPLOY')
         }
 
         stages {
-            stage('Lint') {
+            stage('Python Lint') {
                 steps {
-                    sh 'pip install pylint'
-                    sh 'pylint app.py --fail-under=5 || true'
+                    // Lint and fail if score is below 5
+                    sh 'pylint --fail-under=5 *.py'
                 }
             }
 
-            stage('Security') {
+            stage('Security Scan') {
                 steps {
-                    sh 'pip install bandit'
-                    sh 'bandit -r . || true'
+                    // Install and run `safety`
+                    sh '''
+                        venv/bin/pip install safety
+                        venv/bin/safety check --full-report --output text --exit-code 1
+                    '''
+                }
+                post {
+                    failure {
+                        echo "Security scan failed — fix critical issues!"
+                    }
+                    success {
+                        echo "No critical vulnerabilities found."
+                    }
                 }
             }
 
             stage('Package') {
+                when {
+                    expression { env.GIT_BRANCH == 'origin/main' }
+                }
                 steps {
-                    script {
-                        docker.build("${config.dockerhubRepo}").push()
+                    withCredentials([string(credentialsId: 'DockerHub', variable: 'TOKEN')]) {
+                        sh "echo $TOKEN | docker login -u swimminwebdev --password-stdin"
+                        sh "docker build -t ${dockerRepoName}:latest -t swimminwebdev/${dockerRepoName}:${imageName} ."
+                        sh "docker push swimminwebdev/${dockerRepoName}:${imageName}"
                     }
                 }
             }
 
             stage('Deploy') {
+                when {
+                    expression { params.DEPLOY }
+                }
                 steps {
-                    sshagent(credentials: ['your-ssh-cred-id']) {
-                        sh 'ssh user@your-cloud-vm "cd /path/to/compose && docker-compose pull && docker-compose up -d"'
-                    }
+                    sh "docker stop ${dockerRepoName} || true && docker rm ${dockerRepoName} || true"
+                    sh "docker run -d -p ${portNum}:${portNum} --name ${dockerRepoName} ${dockerRepoName}:latest"
                 }
             }
         }
     }
 }
+
