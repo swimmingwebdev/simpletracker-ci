@@ -67,15 +67,15 @@ def call(dockerRepoName, imageName, portNum) {
                     expression { params.DEPLOY }
                 }
                 steps {
-                    sshagent(credentials: ['vm-ssh-key']) {
-                        sh '''
-                            ssh -o StrictHostKeyChecking=no azureuser@172.210.180.227 << EOF
-                                cd /home/azureuser/simpletracker
-                                git pull origin main
-                                docker-compose pull
+                    script {
+                        sh """
+                            ssh -o StrictHostKeyChecking=no azureuser@172.210.180.227 '
+                                cd /home/azureuser/simpletracker &&
+                                git pull origin main &&
+                                docker-compose pull &&
                                 docker-compose up -d
-                            EOF
-                        '''
+                            '
+                        """
                     }
                 }
             }
