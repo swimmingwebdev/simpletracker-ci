@@ -63,19 +63,19 @@ def call(dockerRepoName, imageName, portNum) {
                 }
             }
 
-        stage('Deploy') {
-            when {
-                expression { params.DEPLOY }
-            }
-            steps {
-                withCredentials([sshUserPrivateKey(credentialsId: 'ec2-ssh-key', keyFileVariable: 'KEY')]) {
-                    sh """
-                        ssh -i "$KEY" -o StrictHostKeyChecking=no ubuntu@ec2-34-234-232-11.compute-1.amazonaws.com << EOF
-                    cd /home/ubuntu/simpletracker
-                    docker-compose pull ${dockerRepoName}
-                    docker-compose up -d ${dockerRepoName}
-                    EOF
-                    """
+            stage('Deploy') {
+                when {
+                    expression { params.DEPLOY }
+                }
+                steps {
+                    withCredentials([sshUserPrivateKey(credentialsId: 'ec2-ssh-key', keyFileVariable: 'KEY')]) {
+                        sh """
+                            ssh -i "\$KEY" -o StrictHostKeyChecking=no ubuntu@ec2-34-234-232-11.compute-1.amazonaws.com << 'EOF'
+            cd /home/ubuntu/simpletracker
+            docker-compose pull ${dockerRepoName}
+            docker-compose up -d ${dockerRepoName}
+            EOF
+                        """
                     }
                 }
             }
