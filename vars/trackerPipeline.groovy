@@ -75,7 +75,7 @@ def call(dockerRepoName, imageName, portNum) {
                                 docker-compose up -d
                             EOF
                         '''
-                    
+                    }
                 }
             }
         }
