@@ -18,6 +18,7 @@ def call(dockerRepoName, imageName, portNum) {
 
             stage('Python Lint') {
                 steps {
+                    sh './venv/bin/pip install pylint'
                     sh './venv/bin/pylint --fail-under=5 analyzer/app.py'
                 }
             }
