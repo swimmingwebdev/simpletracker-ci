@@ -8,6 +8,15 @@ def call(dockerRepoName, imageName, portNum) {
 
         stages {
 
+            stage('Install System Dependencies') {
+                steps {
+                    sh '''
+                        sudo apt-get update
+                        sudo apt-get install -y build-essential default-libmysqlclient-dev pkg-config python3-dev
+                    '''
+                }
+            }
+
             stage('Setup Python Env') {
                 steps {
                     sh 'python3 -m venv venv'
