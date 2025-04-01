@@ -68,7 +68,7 @@ def call(dockerRepoName, imageName, portNum) {
                 }
                 steps {
                     sh '''
-                        ssh -o StrictHostKeyChecking=no -i /home/jenkins/.ssh/jenkins_agent_key azureuser@172.210.180.227 '
+                        ssh -o StrictHostKeyChecking=no -i /home/azureuser/.ssh/jenkins_agent_key azureuser@172.210.180.227 '
                             cd /home/azureuser/simpletracker &&
                             docker-compose pull &&
                             docker-compose up -d
