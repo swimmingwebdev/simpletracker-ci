@@ -56,7 +56,7 @@ def call(dockerRepoName, imageName, portNum) {
                 steps {
                     withCredentials([string(credentialsId: 'DockerHub', variable: 'TOKEN')]) {
                         sh "echo $TOKEN | docker login -u swimminwebdev --password-stdin"
-                        sh "docker build -t ${dockerRepoName}:latest -t swimminwebdev/${dockerRepoName}:${imageName} ."
+                        sh "docker build analyzer/Dockerfile -t ${dockerRepoName}:latest -t swimminwebdev/${dockerRepoName}:${imageName} analyzer/"
                         sh "docker push swimminwebdev/${dockerRepoName}:${imageName}"
                     }
                 }
