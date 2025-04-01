@@ -69,7 +69,7 @@ def call(dockerRepoName, imageName, portNum) {
                 steps {
                     withCredentials([sshUserPrivateKey(credentialsId: 'vm-ssh-key', keyFileVariable: 'SSH_KEY')]) {
                         sh '''
-                            ssh -i $SSH_KEY ubuntu@ec2-34-234-232-11.compute-1.amazonaws.com << EOF
+                            ssh -i $SSH_KEY -o StrictHostKeyChecking=no ubuntu@ec2-34-234-232-11.compute-1.amazonaws.com << EOF
                                 cd /home/azureuser/simpletracker
                                 docker-compose pull
                                 docker-compose up -d
