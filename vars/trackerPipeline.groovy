@@ -15,6 +15,7 @@ def call(dockerRepoName, imageName, portNum) {
                     sh 'pip install --upgrade pip'
                     sh 'pip install -r requirements.txt'
                 }
+            }
             
             stage('Python Lint') {
                 steps {
