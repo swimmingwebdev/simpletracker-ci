@@ -3,7 +3,7 @@ def call(Map config) {
         agent any
 
         environment {
-            DOCKERHUB_REPO = config.dockerhubRepo
+            DOCKERHUB_REPO = "${config.dockerhubRepo}"
         }
 
         stages {
@@ -13,7 +13,7 @@ def call(Map config) {
                 }
             }
 
-            stage('Security Scan') {
+            stage('Security') {
                 steps {
                     sh 'pip install bandit'
                     sh 'bandit -r . || true'
@@ -23,7 +23,7 @@ def call(Map config) {
             stage('Package') {
                 steps {
                     script {
-                        docker.build(DOCKERHUB_REPO).push()
+                        docker.build("${config.dockerhubRepo}").push()
                     }
                 }
             }
