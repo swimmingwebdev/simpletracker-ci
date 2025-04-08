@@ -16,8 +16,8 @@ def call(dockerRepoName, imageName, portNum) {
                             if (dockerRepoName == "storage") {
                                 echo "Installing system dependencies for mysqlclient (storage only)"
                                 sh '''
-                                    apt-get update && \
-                                    apt-get install -y build-essential default-libmysqlclient-dev pkg-config python3-dev
+                                    sudo apt-get update && \
+                                    sudo apt-get install -y build-essential default-libmysqlclient-dev pkg-config python3-dev
                                 '''
                             }
                     }
