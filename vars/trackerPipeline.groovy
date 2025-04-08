@@ -12,22 +12,13 @@ def call(dockerRepoName, imageName, portNum) {
                 steps {
                     sh 'python3 -m venv venv'
                     sh './venv/bin/pip install --upgrade pip'
-                    if (dockerRepoName != "storage") {
-                    sh "./venv/bin/pip install -r ${dockerRepoName}/requirements.txt"
-                } else {
-                    echo "Skipping pip install for storage — requirements already installed in Docker image"
-                }
-                    //     script {
-                    //         if (dockerRepoName == "storage") {
-                    //             echo "Skipping apt-get install for storage — already handled in Dockerfile"
-                    //             // echo "Installing system dependencies for mysqlclient (storage only)"
-                    //             // sh '''
-                    //             //     apt-get update && \
-                    //             //     apt-get install -y build-essential default-libmysqlclient-dev pkg-config python3-dev
-                    //             // '''
-                    //         }
-                    // }
-                    // sh "./venv/bin/pip install -r ${dockerRepoName}/requirements.txt"
+                    script {
+                        if (dockerRepoName != "storage") {
+                            sh "./venv/bin/pip install -r ${dockerRepoName}/requirements.txt"
+                        } else {
+                            echo "Skipping pip install for storage — requirements already installed in Docker image"
+                        }
+                    }
                 }
             }
 
