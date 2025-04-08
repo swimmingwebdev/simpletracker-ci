@@ -14,11 +14,12 @@ def call(dockerRepoName, imageName, portNum) {
                     sh './venv/bin/pip install --upgrade pip'
                         script {
                             if (dockerRepoName == "storage") {
-                                echo "Installing system dependencies for mysqlclient (storage only)"
-                                sh '''
-                                    sudo apt-get update && \
-                                    sudo apt-get install -y build-essential default-libmysqlclient-dev pkg-config python3-dev
-                                '''
+                                echo "Skipping apt-get install for storage — already handled in Dockerfile"
+                                // echo "Installing system dependencies for mysqlclient (storage only)"
+                                // sh '''
+                                //     apt-get update && \
+                                //     apt-get install -y build-essential default-libmysqlclient-dev pkg-config python3-dev
+                                // '''
                             }
                     }
                     sh "./venv/bin/pip install -r ${dockerRepoName}/requirements.txt"
