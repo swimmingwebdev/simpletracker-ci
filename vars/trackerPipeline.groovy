@@ -8,17 +8,19 @@ def call(dockerRepoName, imageName, portNum) {
 
         stages {
 
-            stage('Install System Dependencies') {
-                steps {
-                    sh 'apt-get update'
-                    sh 'apt-get install -y build-essential default-libmysqlclient-dev pkg-config python3-dev'
-                }
-            }
-
             stage('Setup Python Env') {
                 steps {
                     sh 'python3 -m venv venv'
                     sh './venv/bin/pip install --upgrade pip'
+                        script {
+                            if (dockerRepoName == "storage") {
+                                echo "Installing system dependencies for mysqlclient (storage only)"
+                                sh '''
+                                    apt-get update && \
+                                    apt-get install -y build-essential default-libmysqlclient-dev pkg-config python3-dev
+                                '''
+                            }
+                    }
                     sh "./venv/bin/pip install -r ${dockerRepoName}/requirements.txt"
                 }
             }
